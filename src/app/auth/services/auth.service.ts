@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, OnInit, signal } from '@angular/core';
 import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { environment } from '../../../environments/environments';
 import { AuthStatus, CheckTokenResponse, LoginResponse, User } from '../interfaces/index.interface';
@@ -7,7 +7,7 @@ import { AuthStatus, CheckTokenResponse, LoginResponse, User } from '../interfac
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
+export class AuthService{
 
   private readonly myUrl = environment.baseUrl;
   private http = inject(HttpClient);
@@ -18,7 +18,7 @@ export class AuthService {
   public currentUser = computed( () => this._currentUser());
   public authStatus = computed( () => this._authStatus());
 
-  constructor() {}
+  constructor() {this.checkToken()};
 
   login( email: string, password: string): Observable<boolean> {
     const url = `${this.myUrl}/auth/login`;
@@ -42,21 +42,28 @@ export class AuthService {
     );
   }
 
-  checkToken(){
+  checkToken(): Observable<boolean>{
     const url = 'http://localhost:3000/auth/check-token';
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`)
 
-    this.http.get<CheckTokenResponse>(url, { headers:headers })
+    return this.http.get<CheckTokenResponse>(url, { headers:headers })
       .pipe(
-        map(({ user, jwt: token }) => {
+        map(({ user, jwt: token2 }) => {
+
           this._currentUser.set(user);
           this._authStatus.set(AuthStatus.authenticated);
-          localStorage.setItem('token', token)
+          localStorage.setItem('token', token2);
+          console.log('true papa');
+
+          return true;
          } ),
         catchError( () => {
-        console.log('Check Token: Error getting token');
-        return of(false)
+          this._authStatus.set(AuthStatus.notAuthenticated);
+          console.log('Check Token: Error getting token');
+          console.log('false papa');
+          return of(false);
+
       }))
   }
 
