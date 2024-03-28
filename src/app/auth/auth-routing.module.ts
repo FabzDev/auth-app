@@ -10,7 +10,7 @@ const routes: Routes = [
     path: '',
     component: AuthLayoutComponent,
     children: [
-      { path: 'login', canActivate: [isNotAuthenticatedGuard], component: LoginPageComponent },
+      { path: 'login', component: LoginPageComponent },
       { path: 'register', component: RegisterPageComponent },
       { path: '**', redirectTo: 'login' },
     ],
