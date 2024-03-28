@@ -3,13 +3,14 @@ import { RouterModule, Routes } from '@angular/router';
 import { RegisterPageComponent } from './pages/register-page/register-page.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
+import { isNotAuthenticatedGuard } from './guards/is-not-authenticated.guard';
 
 const routes: Routes = [
   {
     path: '',
     component: AuthLayoutComponent,
     children: [
-      { path: 'login', component: LoginPageComponent },
+      { path: 'login', canActivate: [isNotAuthenticatedGuard], component: LoginPageComponent },
       { path: 'register', component: RegisterPageComponent },
       { path: '**', redirectTo: 'login' },
     ],

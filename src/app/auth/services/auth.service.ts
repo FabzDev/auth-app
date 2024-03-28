@@ -18,7 +18,7 @@ export class AuthService{
   public currentUser = computed( () => this._currentUser());
   public authStatus = computed( () => this._authStatus());
 
-  constructor() {this.checkToken()};
+  constructor() {this.checkToken().subscribe()};
 
   login( email: string, password: string): Observable<boolean> {
     const url = `${this.myUrl}/auth/login`;
@@ -66,5 +66,4 @@ export class AuthService{
 
       }))
   }
-
 }

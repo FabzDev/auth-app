@@ -6,7 +6,7 @@ import { AuthStatus } from './auth/interfaces/auth-status.enum';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
 })
 export class AppComponent {
   title = 'authApp';
@@ -14,23 +14,20 @@ export class AppComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-
-  public statusEffect = effect( () => {
+  public statusEffect = effect(() => {
     console.log(this.authService.authStatus());
 
-    if( this.authService.authStatus() === AuthStatus.notAuthenticated ){
-      this.router.navigateByUrl('/auth/login');
-      return;
-    }
+    switch (this.authService.authStatus()) {
+      case AuthStatus.checking:
+        return;
 
-    if( this.authService.authStatus() === AuthStatus.authenticated ){
-      this.router.navigateByUrl('/dashboard');
-      return;
-    }
+      case AuthStatus.authenticated:
+        this.router.navigateByUrl('/dashboard');
+        return;
 
-    if( this.authService.authStatus() === AuthStatus.checking ){
-      this.authService.checkToken().subscribe();
-      this.router.navigateByUrl('dashboard');
+      case AuthStatus.notAuthenticated:
+        this.router.navigateByUrl('/auth/login');
+        return;
     }
-  })
+  });
 }
