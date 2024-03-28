@@ -1,8 +1,6 @@
 import { Component, computed, effect, inject, OnInit } from '@angular/core';
 import { AuthService } from '../../../auth/services/auth.service';
-import { User } from '../../../auth/interfaces/user.interface';
 import { Router } from '@angular/router';
-import { AuthStatus } from '../../../auth/interfaces/auth-status.enum';
 
 @Component({
   selector: 'app-dashboard-layout',
@@ -21,6 +19,7 @@ export class DashboardLayoutComponent{
   redirectLogin(){
     this.router.navigateByUrl('/auth/login');
   }
+
   onLogout(){
     this.authService.logout();
   }
