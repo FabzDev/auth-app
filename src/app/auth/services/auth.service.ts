@@ -3,6 +3,7 @@ import { computed, inject, Injectable, OnInit, signal } from '@angular/core';
 import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { environment } from '../../../environments/environments';
 import { AuthStatus, CheckTokenResponse, LoginResponse, User } from '../interfaces/index.interface';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +12,8 @@ export class AuthService{
 
   private readonly myUrl = environment.baseUrl;
   private http = inject(HttpClient);
+  private router = inject(Router);
+
 
   private _currentUser = signal<User | null>(null);
   private _authStatus = signal<AuthStatus>(AuthStatus.checking);
@@ -18,7 +21,9 @@ export class AuthService{
   public currentUser = computed( () => this._currentUser());
   public authStatus = computed( () => this._authStatus());
 
-  constructor() {this.checkToken().subscribe()};
+  constructor(){
+    this.checkToken().subscribe()
+  };
 
   login( email: string, password: string): Observable<boolean> {
     const url = `${this.myUrl}/auth/login`;
@@ -65,5 +70,10 @@ export class AuthService{
           return of(false);
 
       }))
+  }
+
+  logout(){
+    localStorage.removeItem('token');
+    this._authStatus.set( AuthStatus.notAuthenticated );
   }
 }

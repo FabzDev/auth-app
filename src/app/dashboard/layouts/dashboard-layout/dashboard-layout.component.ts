@@ -16,8 +16,13 @@ export class DashboardLayoutComponent{
 
   public user = this.authService.currentUser();
 
+  constructor(){}
+
   redirectLogin(){
     this.router.navigateByUrl('/auth/login');
+  }
+  onLogout(){
+    this.authService.logout();
   }
 
 }
