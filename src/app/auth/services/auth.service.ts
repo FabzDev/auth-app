@@ -39,7 +39,7 @@ export class AuthService {
         this._authStatus.set(AuthStatus.authenticated);
         localStorage.setItem('token', token);
 
-        console.log({user, token});
+        // console.log({user, token});
       }),
 
       map(() => true),
@@ -66,7 +66,7 @@ export class AuthService {
         this._currentUser.set(user);
         this._authStatus.set(AuthStatus.authenticated);
         localStorage.setItem('token', token2);
-        console.log('true papa');
+        // console.log('true papa');
 
         return true;
       }),
